@@ -109,11 +109,12 @@ override open func viewDidLoad() {
                 
                 func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
                     if case let YPCropType.rectangle(ratio) = YPConfig.showsCrop {
-                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
-                        cropVC.didFinishCropping = { croppedImage in
-                            photo.modifiedImage = croppedImage
-                            completion(photo)
-                        }
+                        let cropVC = CropViewController(croppingStyle: CropViewCroppingStyle.default, image: photo.image)
+//                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
+//                        cropVC.didFinishCropping = { croppedImage in
+//                            photo.modifiedImage = croppedImage
+//                            completion(photo)
+//                        }
                         self?.pushViewController(cropVC, animated: true)
                     } else {
                         completion(photo)
