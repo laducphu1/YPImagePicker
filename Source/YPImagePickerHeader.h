@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TOCropViewController.h"
 
 //! Project version number for YPImagePicker.
 FOUNDATION_EXPORT double YPImagePickerVersionNumber;
