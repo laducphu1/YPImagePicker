@@ -9,13 +9,14 @@
 import UIKit
 import AVFoundation
 import Photos
+import CropViewController
 
 public protocol YPImagePickerDelegate: AnyObject {
     func noPhotos()
     func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool
 }
 
-open class YPImagePicker: UINavigationController {
+open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
       
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -108,13 +109,14 @@ override open func viewDidLoad() {
                 }
                 
                 func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
-                    if case let YPCropType.rectangle(ratio) = YPConfig.showsCrop {
+                    if case YPCropType.rectangle(_) = YPConfig.showsCrop {
                         let cropVC = CropViewController(croppingStyle: CropViewCroppingStyle.default, image: photo.image)
 //                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
-//                        cropVC.didFinishCropping = { croppedImage in
-//                            photo.modifiedImage = croppedImage
-//                            completion(photo)
-//                        }
+                        cropVC.delegate = self
+                        cropVC.didFinishCropping = { croppedImage in
+                            photo.modifiedImage = croppedImage
+                            completion(photo)
+                        }
                         self?.pushViewController(cropVC, animated: true)
                     } else {
                         completion(photo)
@@ -171,5 +173,16 @@ extension YPImagePicker: ImagePickerDelegate {
     func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
         return self.imagePickerDelegate?.shouldAddToSelection(indexPath: indexPath, numSelections: numSelections)
 			?? true
+    }
+}
+
+extension YPImagePicker {
+    public func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+    }
+    
+    public func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+    }
+    public func cropViewController(_ cropViewController: CropViewController, didFinishCancelled cancelled: Bool) {
+        
     }
 }
