@@ -9,16 +9,16 @@
 import UIKit
 import Stevia
 
-public protocol YPSelectionsGalleryCellDelegate: class {
+public protocol YPSelectionsGalleryCellDelegate: NSObject {
     func selectionsGalleryCellDidTapRemove(cell: YPSelectionsGalleryCell)
+    func selectionsGalleryCellDidTapEdit(cell: YPSelectionsGalleryCell)
 }
 
 public class YPSelectionsGalleryCell: UICollectionViewCell {
     
     weak var delegate: YPSelectionsGalleryCellDelegate?
     let imageView = UIImageView()
-    let editIcon = UIView()
-    let editSquare = UIView()
+    let editButton = UIButton()
     let removeButton = UIButton()
     
     override init(frame: CGRect) {
@@ -26,17 +26,13 @@ public class YPSelectionsGalleryCell: UICollectionViewCell {
     
         sv(
             imageView,
-            editIcon,
-            editSquare,
+            editButton,
             removeButton
         )
-        
+        editButton.backgroundColor = UIColor.white
         imageView.fillContainer()
-        editIcon.size(32).left(12).bottom(12)
-        editSquare.size(16)
-        editSquare.CenterY == editIcon.CenterY
-        editSquare.CenterX == editIcon.CenterX
-        
+        editButton.size(32).left(12).bottom(12)
+                
         removeButton.top(12).trailing(12)
         
         layer.shadowColor = UIColor.black.cgColor
@@ -48,15 +44,16 @@ public class YPSelectionsGalleryCell: UICollectionViewCell {
             i.clipsToBounds = true
             i.contentMode = .scaleAspectFill
         }
-        editIcon.style { v in
+        editButton.style { v in
             v.backgroundColor = UIColor.ypSystemBackground
             v.layer.cornerRadius = 16
-        }
-        editSquare.style { v in
             v.layer.borderWidth = 1
             v.layer.borderColor = UIColor.ypLabel.cgColor
         }
+        editButton.setImage(YPConfig.icons.editImage, for: .normal)
+        
         removeButton.setImage(YPConfig.icons.removeImage, for: .normal)
+        editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
         removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
     }
     
@@ -65,9 +62,13 @@ public class YPSelectionsGalleryCell: UICollectionViewCell {
         delegate?.selectionsGalleryCellDidTapRemove(cell: self)
     }
     
+    @objc
+    func editButtonTapped() {
+        delegate?.selectionsGalleryCellDidTapEdit(cell: self)
+    }
+    
     func setEditable(_ editable: Bool) {
-        self.editIcon.isHidden = !editable
-        self.editSquare.isHidden = !editable
+        self.editButton.isHidden = !editable
     }
     
     required public init?(coder aDecoder: NSCoder) {

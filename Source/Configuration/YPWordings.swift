@@ -12,6 +12,7 @@ public struct YPWordings {
     
     public var permissionPopup = PermissionPopup()
     public var videoDurationPopup = VideoDurationPopup()
+    public var cropViewController = CropViewController()
 
     public struct PermissionPopup {
         public var title = ypLocalized("YPImagePickerPermissionDeniedPopupTitle")
@@ -26,6 +27,17 @@ public struct YPWordings {
         public var tooLongMessage = ypLocalized("YPImagePickerVideoTooLong")
     }
     
+    public struct CropViewController {
+        public var done = ypLocalized("Done")
+        public var cancel = ypLocalized("Cancel")
+        public var reset = ypLocalized("Reset")
+        public var original = ypLocalized("Original")
+        public var square = ypLocalized("Square")
+        public var deleteChanges = ypLocalized("Delete Changes")
+        public var yes = ypLocalized("Yes")
+        public var no = ypLocalized("No")
+    }
+
     public var ok = ypLocalized("YPImagePickerOk")
     public var done = ypLocalized("YPImagePickerDone")
     public var cancel = ypLocalized("YPImagePickerCancel")

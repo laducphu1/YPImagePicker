@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CropViewController
 
 public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDelegate {
     
@@ -74,6 +75,35 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
             }, completion: { _ in })
         }
     }
+    
+    public func selectionsGalleryCellDidTapEdit(cell: YPSelectionsGalleryCell) {
+        if let indexPath = v.collectionView.indexPath(for: cell) {
+            let item = items[indexPath.row]
+            switch item {
+            case .photo(let photo):
+                let cropVC = CropViewController(croppingStyle: CropViewCroppingStyle.default, image: photo.image)
+                //                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
+                cropVC.delegate = self
+                cropVC.aspectRatioPickerButtonHidden = true
+                cropVC.onDidCropToRect = { [weak self] croppedImage, rect, angle in
+                    photo.modifiedImage = croppedImage
+                    self?.items[indexPath.row] = YPMediaItem.photo(p: photo)
+                    self?.v.collectionView.reloadData()
+                    cropVC.dismiss(animated: true, completion: nil)
+                }
+                cropVC.onDidCropToCircleImage = { [weak self] croppedImage, rect, angle in
+                    photo.modifiedImage = croppedImage
+                    self?.items[indexPath.row] = YPMediaItem.photo(p: photo)
+                    self?.v.collectionView.reloadData()
+                    cropVC.dismiss(animated: true, completion: nil)
+                }
+                present(cropVC, animated: true, completion: nil)
+            case .video( _):
+                break
+            }
+            
+        }
+    }
 }
 
 // MARK: - Collection View
@@ -93,7 +123,7 @@ extension YPSelectionsGalleryVC: UICollectionViewDataSource {
         switch item {
         case .photo(let photo):
             cell.imageView.image = photo.image
-            cell.setEditable(YPConfig.showsPhotoFilters)
+            cell.setEditable(YPConfig.showImageEditor)
         case .video(let video):
             cell.imageView.image = video.thumbnail
             cell.setEditable(YPConfig.showsVideoTrimmer)
@@ -112,6 +142,8 @@ extension YPSelectionsGalleryVC: UICollectionViewDelegate {
         case .photo(let photo):
             if !YPConfig.filters.isEmpty, YPConfig.showsPhotoFilters {
                 mediaFilterVC = YPPhotoFiltersVC(inputPhoto: photo, isFromSelectionVC: true)
+            } else {
+                return
             }
         case .video(let video):
             if YPConfig.showsVideoTrimmer {
@@ -144,4 +176,8 @@ extension YPSelectionsGalleryVC: UICollectionViewDelegate {
             : UIScrollView.DecelerationRate.normal
         lastContentOffsetX = scrollView.contentOffset.x
     }
+}
+
+extension YPSelectionsGalleryVC: CropViewControllerDelegate {
+    
 }

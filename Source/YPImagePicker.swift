@@ -111,22 +111,22 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
                 func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
                     if YPImagePickerConfiguration.shared.showImageEditor {
                         let cropVC = CropViewController(croppingStyle: CropViewCroppingStyle.default, image: photo.image)
+                        cropVC.doneButtonTitle = YPConfig.wordings.cropViewController.done
+                        cropVC.cancelButtonTitle = YPConfig.wordings.cropViewController.cancel
+                        cropVC.aspectRatioPickerButtonHidden = true
                         //                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
                         cropVC.delegate = self
                         cropVC.onDidCropToRect = { croppedImage, rect, angle in
                             photo.modifiedImage = croppedImage
                             completion(photo)
                         }
-                        cropVC.onDidCropImageToRect = { rect, angle in
-                            completion(photo)
-                        }
                         cropVC.onDidCropToCircleImage = { croppedImage, rect, angle in
                             photo.modifiedImage = croppedImage
                             completion(photo)
                         }
-                        cropVC.onDidFinishCancelled = { isFinished in
-                            completion(photo)
-                        }
+//                        cropVC.onDidFinishCancelled = { isFinished in
+//                            completion(photo)
+//                        }
                         
                         self?.pushViewController(cropVC, animated: true)
                     } else {
