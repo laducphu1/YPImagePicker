@@ -50,6 +50,7 @@ public class YPSelectionsGalleryCell: UICollectionViewCell {
             v.layer.borderWidth = 1
             v.layer.borderColor = UIColor.ypLabel.cgColor
         }
+        editButton.tintColor = UIColor.ypLabel
         editButton.setImage(YPConfig.icons.editImage, for: .normal)
         
         removeButton.setImage(YPConfig.icons.removeImage, for: .normal)
