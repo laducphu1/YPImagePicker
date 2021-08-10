@@ -82,6 +82,8 @@ public struct YPImagePickerConfiguration {
     public var screens: [YPPickerScreen] = [.library, .photo]
 
     /// Adds a Crop step in the photo taking process, after filters.  Defaults to .none
+    public var showImageEditor: Bool = false
+    
     public var showsCrop: YPCropType = .none
     
     /// Ex: cappedTo:1024 will make sure images from the library or the camera will be

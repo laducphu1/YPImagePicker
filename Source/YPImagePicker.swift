@@ -17,11 +17,10 @@ public protocol YPImagePickerDelegate: AnyObject {
 }
 
 open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
-      
+    
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
-    
     private var _didFinishPicking: (([YPMediaItem], Bool) -> Void)?
     public func didFinishPicking(completion: @escaping (_ items: [YPMediaItem], _ cancelled: Bool) -> Void) {
         _didFinishPicking = completion
@@ -61,15 +60,16 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-override open func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         picker.didClose = { [weak self] in
             self?._didFinishPicking?([], true)
         }
+        
         viewControllers = [picker]
         setupLoadingView()
         navigationBar.isTranslucent = false
-
+        
         picker.didSelectItems = { [weak self] items in
             // Use Fade transition instead of default push animation
             let transition = CATransition()
@@ -109,14 +109,25 @@ override open func viewDidLoad() {
                 }
                 
                 func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
-                    if case YPCropType.rectangle(_) = YPConfig.showsCrop {
+                    if YPImagePickerConfiguration.shared.showImageEditor {
                         let cropVC = CropViewController(croppingStyle: CropViewCroppingStyle.default, image: photo.image)
-//                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
+                        //                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
                         cropVC.delegate = self
-                        cropVC.didFinishCropping = { croppedImage in
+                        cropVC.onDidCropToRect = { croppedImage, rect, angle in
                             photo.modifiedImage = croppedImage
                             completion(photo)
                         }
+                        cropVC.onDidCropImageToRect = { rect, angle in
+                            completion(photo)
+                        }
+                        cropVC.onDidCropToCircleImage = { croppedImage, rect, angle in
+                            photo.modifiedImage = croppedImage
+                            completion(photo)
+                        }
+                        cropVC.onDidFinishCancelled = { isFinished in
+                            completion(photo)
+                        }
+                        
                         self?.pushViewController(cropVC, animated: true)
                     } else {
                         completion(photo)
@@ -172,12 +183,13 @@ extension YPImagePicker: ImagePickerDelegate {
     
     func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
         return self.imagePickerDelegate?.shouldAddToSelection(indexPath: indexPath, numSelections: numSelections)
-			?? true
+            ?? true
     }
 }
 
 extension YPImagePicker {
     public func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+        
     }
     
     public func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
