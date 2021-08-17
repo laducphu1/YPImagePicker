@@ -96,7 +96,11 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
             let item = items.first!
             switch item {
             case .photo(let photo):
-                let completion = { (photo: YPMediaPhoto) in
+                let completion = { (photo: YPMediaPhoto?) in
+                    guard let photo = photo else {
+                        self?._didFinishPicking?([], true)
+                        return
+                    }
                     let mediaItem = YPMediaItem.photo(p: photo)
                     // Save new image or existing but modified, to the photo album.
                     if YPConfig.shouldSaveNewPicturesToAlbum {
@@ -108,7 +112,8 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
                     self?.didSelect(items: [mediaItem])
                 }
                 
-                func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto) -> Void) {
+                
+                func showCropVC(photo: YPMediaPhoto, completion: @escaping (_ aphoto: YPMediaPhoto?) -> Void) {
                     if YPImagePickerConfiguration.shared.showImageEditor {
                         let cropVC = CropViewController(croppingStyle: CropViewCroppingStyle.default, image: photo.image)
                         cropVC.doneButtonTitle = YPConfig.wordings.cropViewController.done
@@ -124,9 +129,9 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
                             photo.modifiedImage = croppedImage
                             completion(photo)
                         }
-//                        cropVC.onDidFinishCancelled = { isFinished in
-//                            completion(photo)
-//                        }
+                        cropVC.onDidFinishCancelled = { isFinished in
+                            completion(nil)
+                        }
                         
                         self?.pushViewController(cropVC, animated: true)
                     } else {
