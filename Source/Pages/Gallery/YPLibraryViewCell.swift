@@ -89,7 +89,7 @@ class YPLibraryViewCell: UICollectionViewCell {
         durationLabel.textColor = .white
         durationLabel.font = YPConfig.fonts.durationFont
         durationLabel.isHidden = true
-        selectionOverlay.backgroundColor = .white
+        selectionOverlay.backgroundColor = YPImagePickerConfiguration.shared.colors.selectionOverlayColor
         selectionOverlay.alpha = 0
         backgroundColor = .ypSecondarySystemBackground
     }

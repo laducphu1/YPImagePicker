@@ -98,6 +98,9 @@ class YPAssetViewContainer: UIView {
     // MARK: - Square button
 
     @objc public func squareCropButtonTapped() {
+        squareCropButton.isSelected.toggle()
+        let image: UIImage = squareCropButton.isSelected ? YPConfig.icons.cropSelectedIcon : YPConfig.icons.cropIcon
+        squareCropButton.setImage(image, for: .normal)
         if let zoomableView = zoomableView {
             let z = zoomableView.zoomScale
             shouldCropToSquare = (z >= 1 && z < zoomableView.squaredZoomScale)
