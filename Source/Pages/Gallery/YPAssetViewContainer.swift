@@ -79,7 +79,8 @@ class YPAssetViewContainer: UIView {
         
         if !onlySquare {
             // Crop Button
-            squareCropButton.setImage(YPConfig.icons.cropIcon, for: .normal)
+            let image: UIImage = YPConfig.library.isSquareByDefault ? YPConfig.icons.cropSelectedIcon : YPConfig.icons.cropIcon
+            squareCropButton.setImage(image, for: .normal)
             sv(squareCropButton)
             squareCropButton.size(42)
             |-15-squareCropButton
