@@ -12,6 +12,7 @@ import Stevia
 public protocol YPSelectionsGalleryCellDelegate: NSObject {
     func selectionsGalleryCellDidTapRemove(cell: YPSelectionsGalleryCell)
     func selectionsGalleryCellDidTapEdit(cell: YPSelectionsGalleryCell)
+    func selectionsGalleryCellDidTapAdd()
 }
 
 public class YPSelectionsGalleryCell: UICollectionViewCell {
@@ -95,3 +96,56 @@ public class YPSelectionsGalleryCell: UICollectionViewCell {
         }
     }
 }
+
+public class AddSelectionsGalleryCell: UICollectionViewCell {
+    
+    weak var delegate: YPSelectionsGalleryCellDelegate?
+    let addButton = UIButton()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    
+        sv(
+            addButton
+        )
+
+        contentView.addSubview(addButton)
+        contentView.backgroundColor = .clear
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addButton.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        addButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        addButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        addButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        addButton.setImage(YPConfig.icons.addButtonImage, for: .normal)
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+    }
+        
+    @objc
+    func addButtonTapped() {
+        delegate?.selectionsGalleryCellDidTapAdd()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: 0.5,
+                           delay: 0,
+                           usingSpringWithDamping: 0.5,
+                           initialSpringVelocity: 0,
+                           options: .curveEaseInOut,
+                           animations: {
+                            if self.isHighlighted {
+                                self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+                                self.alpha = 0.8
+                            } else {
+                                self.transform = .identity
+                                self.alpha = 1
+                            }
+            }, completion: nil)
+        }
+    }
+}
+

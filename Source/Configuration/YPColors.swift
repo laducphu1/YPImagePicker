@@ -51,7 +51,7 @@ public struct YPColors {
     public var bottomMenuItemUnselectedTextColor: UIColor = .ypSecondaryLabel
     
     /// The overlay color of the image selected
-    public var selectionOverlayColor: UIColor = .white
+    public var selectionOverlayColor: UIColor = .black
 
     // MARK: - Trimmer
     

@@ -29,5 +29,8 @@ public struct YPIcons {
     public var playImage: UIImage = imageFromBundle("yp_play")
     public var removeImage: UIImage = imageFromBundle("yp_remove")
     public var editImage: UIImage = imageFromBundle("cropping_edit_icon")
-
+    public var backButtonImage: UIImage = imageFromBundle("arrow_leff_icon")
+    public var multipleSelectionOffImage: UIImage = imageFromBundle("multiple_icon")
+    public var multipleSelectionOnImage: UIImage = imageFromBundle("multiple_selected_icon")
+    public var addButtonImage: UIImage = imageFromBundle("add_icon")
 }

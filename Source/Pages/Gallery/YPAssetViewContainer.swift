@@ -91,7 +91,7 @@ class YPAssetViewContainer: UIView {
         sv(multipleSelectionButton)
         multipleSelectionButton.size(42)
         multipleSelectionButton-15-|
-        multipleSelectionButton.setImage(YPConfig.icons.multipleSelectionOffIcon, for: .normal)
+        multipleSelectionButton.setImage(YPConfig.icons.multipleSelectionOffImage, for: .normal)
         multipleSelectionButton.Bottom == zoomableView!.Bottom - 15
         
     }
@@ -99,14 +99,13 @@ class YPAssetViewContainer: UIView {
     // MARK: - Square button
 
     @objc public func squareCropButtonTapped() {
-        squareCropButton.isSelected.toggle()
-        let image: UIImage = squareCropButton.isSelected ? YPConfig.icons.cropSelectedIcon : YPConfig.icons.cropIcon
-        squareCropButton.setImage(image, for: .normal)
         if let zoomableView = zoomableView {
             let z = zoomableView.zoomScale
             shouldCropToSquare = (z >= 1 && z < zoomableView.squaredZoomScale)
         }
         zoomableView?.fitImage(shouldCropToSquare, animated: true)
+        let image: UIImage = shouldCropToSquare ? YPConfig.icons.cropSelectedIcon : YPConfig.icons.cropIcon
+        squareCropButton.setImage(image, for: .normal)
     }
     
     public func refreshSquareCropButton() {
@@ -129,7 +128,7 @@ class YPAssetViewContainer: UIView {
     /// Use this to update the multiple selection mode UI state for the YPAssetViewContainer
     public func setMultipleSelectionMode(on: Bool) {
         isMultipleSelection = on
-        let image = on ? YPConfig.icons.multipleSelectionOnIcon : YPConfig.icons.multipleSelectionOffIcon
+        let image = on ? YPConfig.icons.multipleSelectionOnImage : YPConfig.icons.multipleSelectionOffImage
         multipleSelectionButton.setImage(image, for: .normal)
         refreshSquareCropButton()
     }

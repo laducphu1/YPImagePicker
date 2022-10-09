@@ -9,6 +9,11 @@
 import UIKit
 import CropViewController
 
+enum YPSelectionsGallerySection: Int, CaseIterable {
+    case selectionsGallery = 0
+    case addSelectionsGallery = 1
+}
+
 public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDelegate {
     
     override public var prefersStatusBarHidden: Bool { return YPConfig.hidesStatusBar }
@@ -16,6 +21,10 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
     public var items: [YPMediaItem] = []
     public var didFinishHandler: ((_ gallery: YPSelectionsGalleryVC, _ items: [YPMediaItem]) -> Void)?
     private var lastContentOffsetX: CGFloat = 0
+    private let sideMargin: CGFloat = 24
+    private let spacing: CGFloat = 12
+    private let overlapppingNextPhoto: CGFloat = 37
+    private let screenWidth = YPImagePickerConfiguration.screenWidth
     
     var v = YPSelectionsGalleryView()
     public override func loadView() { view = v }
@@ -37,6 +46,7 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
 
         // Register collection view cell
         v.collectionView.register(YPSelectionsGalleryCell.self, forCellWithReuseIdentifier: "item")
+        v.collectionView.register(AddSelectionsGalleryCell.self, forCellWithReuseIdentifier: "addItem")
         v.collectionView.dataSource = self
         v.collectionView.delegate = self
         
@@ -65,6 +75,10 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
             }
         }
         didFinishHandler?(self, items)
+    }
+    
+    public func selectionsGalleryCellDidTapAdd() {
+        navigationController?.popViewController(animated: true)
     }
     
     public func selectionsGalleryCellDidTapRemove(cell: YPSelectionsGalleryCell) {
@@ -107,35 +121,81 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
 }
 
 // MARK: - Collection View
-extension YPSelectionsGalleryVC: UICollectionViewDataSource {
+extension YPSelectionsGalleryVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return YPSelectionsGallerySection.allCases.count
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        switch YPSelectionsGallerySection(rawValue: section) {
+        case .selectionsGallery:
+            return items.count
+        default:
+            if items.count < YPConfig.library.maxNumberOfItems {
+                return 1
+            }
+            return 0
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView,
                                cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "item",
-                                                            for: indexPath) as? YPSelectionsGalleryCell else {
-            return UICollectionViewCell()
+        switch YPSelectionsGallerySection(rawValue: indexPath.section) {
+        case .selectionsGallery:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "item",
+                                                                for: indexPath) as? YPSelectionsGalleryCell else {
+                return UICollectionViewCell()
+            }
+            cell.delegate = self
+            let item = items[indexPath.row]
+            switch item {
+            case .photo(let photo):
+                cell.imageView.image = photo.image
+                cell.setEditable(YPConfig.showImageEditor)
+            case .video(let video):
+                cell.imageView.image = video.thumbnail
+                cell.setEditable(YPConfig.showsVideoTrimmer)
+            }
+            cell.removeButton.isHidden = YPConfig.gallery.hidesRemoveButton
+            return cell
+        default:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addItem",
+                                                                for: indexPath) as? AddSelectionsGalleryCell else {
+                return UICollectionViewCell()
+            }
+            cell.delegate = self
+            return cell
         }
-        cell.delegate = self
-        let item = items[indexPath.row]
-        switch item {
-        case .photo(let photo):
-            cell.imageView.image = photo.image
-            cell.setEditable(YPConfig.showImageEditor)
-        case .video(let video):
-            cell.imageView.image = video.thumbnail
-            cell.setEditable(YPConfig.showsVideoTrimmer)
-        }
-        cell.removeButton.isHidden = YPConfig.gallery.hidesRemoveButton
-        return cell
     }
 }
 
 extension YPSelectionsGalleryVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        switch YPSelectionsGallerySection(rawValue: section) {
+        case .addSelectionsGallery:
+            return .zero
+        default:
+            if items.count < YPConfig.library.maxNumberOfItems {
+                return UIEdgeInsets(top: 0, left: sideMargin, bottom: 0, right: 0)
+            }
+            return UIEdgeInsets(top: 0, left: sideMargin, bottom: 0, right: sideMargin)
+        }
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let selectionSize = screenWidth - (sideMargin + overlapppingNextPhoto)
+        if YPSelectionsGallerySection(rawValue: indexPath.section) == .addSelectionsGallery {
+            let addSelectionSize = screenWidth - selectionSize / 2
+            return CGSize(width: addSelectionSize, height: addSelectionSize)
+        }
+        return CGSize(width: selectionSize, height: selectionSize)
+    }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if YPSelectionsGallerySection(rawValue: indexPath.section) == .addSelectionsGallery {
+            return
+        }
+        
         let item = items[indexPath.row]
         var mediaFilterVC: IsMediaFilterVC?
         switch item {
