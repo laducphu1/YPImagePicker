@@ -119,6 +119,7 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
                         cropVC.doneButtonTitle = YPConfig.wordings.cropViewController.done
                         cropVC.cancelButtonTitle = YPConfig.wordings.cropViewController.cancel
                         cropVC.aspectRatioPickerButtonHidden = true
+                        cropVC.hidesNavigationBar = false
                         //                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
                         cropVC.delegate = self
                         cropVC.onDidCropToRect = { croppedImage, rect, angle in
@@ -155,7 +156,7 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
             case .video(let video):
                 if YPConfig.showsVideoTrimmer {
                     let videoFiltersVC = YPVideoFiltersVC.initWith(video: video,
-                                                                   isFromSelectionVC: false)
+                                                                   isFromSelectionVC: true)
                     videoFiltersVC.didSave = { [weak self] outputMedia in
                         self?.didSelect(items: [outputMedia])
                     }
