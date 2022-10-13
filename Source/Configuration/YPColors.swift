@@ -24,19 +24,19 @@ public struct YPColors {
     public var multipleItemsSelectedCircleColor: UIColor?
     
     /// The background color of the bottom of photo and video screens.
-    public var photoVideoScreenBackgroundColor: UIColor = .offWhiteOrBlack
+    public var photoVideoScreenBackgroundColor: UIColor = .white
 
     /// The background color of the library and space between collection view cells.
-    public var libraryScreenBackgroundColor: UIColor = .offWhiteOrBlack
+    public var libraryScreenBackgroundColor: UIColor = .white
 
     /// The background color of safe area. For example under the menu items.
-    public var safeAreaBackgroundColor: UIColor = .offWhiteOrBlack
+    public var safeAreaBackgroundColor: UIColor = .white
 
     /// A color for background of the asset container. You can see it when bouncing the image.
-    public var assetViewBackgroundColor: UIColor = .offWhiteOrBlack
+    public var assetViewBackgroundColor: UIColor = .white
     
     /// A color for background in filters.
-    public var filterBackgroundColor: UIColor = .offWhiteOrBlack
+    public var filterBackgroundColor: UIColor = .white
 
     /// A color for background in selections gallery. When multiple items selected.
     public var selectionsBackgroundColor: UIColor = .offWhiteOrBlack
@@ -75,9 +75,9 @@ public struct YPColors {
     public var progressBarCompletedColor: UIColor?
     
     /// The color of the Album's NavigationBar background
-    public var albumBarTintColor: UIColor = .ypSystemBackground
+    public var albumBarTintColor: UIColor = .white
     /// The color of the Album's left and right items color
-    public var albumTintColor: UIColor = .ypLabel
+    public var albumTintColor: UIColor = .black
     /// The color of the Album's title color
-    public var albumTitleColor: UIColor = .ypLabel
+    public var albumTitleColor: UIColor = .black
 }
