@@ -55,6 +55,12 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
                                                             style: .done,
                                                             target: self,
                                                             action: #selector(done))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: YPConfig.icons.backButtonImage,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(cancel))
+        
         navigationItem.rightBarButtonItem?.tintColor = YPConfig.colors.tintColor
         navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .disabled)
         navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
@@ -62,6 +68,11 @@ public class YPSelectionsGalleryVC: UIViewController, YPSelectionsGalleryCellDel
         
         YPHelper.changeBackButtonIcon(self)
         YPHelper.changeBackButtonTitle(self)
+    }
+    
+    @objc
+    private func cancel() {
+        navigationController?.popViewController(animated: true)
     }
 
     @objc

@@ -83,7 +83,7 @@ open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecogni
                                                                style: .plain,
                                                                target: self,
                                                                action: #selector(cancel))
-            navigationItem.leftBarButtonItem?.tintColor = .white
+//            navigationItem.leftBarButtonItem?.tintColor = .white
 //            navigationItem.leftBarButtonItem?.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
         }
         setupRightBarButton()

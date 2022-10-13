@@ -120,6 +120,8 @@ open class YPImagePicker: UINavigationController, CropViewControllerDelegate {
                         cropVC.cancelButtonTitle = YPConfig.wordings.cropViewController.cancel
                         cropVC.aspectRatioPickerButtonHidden = true
                         cropVC.hidesNavigationBar = false
+                        cropVC.navigationItem.leftBarButtonItem?.tintColor = .white
+
                         //                        let cropVC = YPCropVC(image: photo.image, ratio: ratio)
                         cropVC.delegate = self
                         cropVC.onDidCropToRect = { croppedImage, rect, angle in

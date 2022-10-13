@@ -81,7 +81,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
                                                                style: .plain,
                                                                target: self,
                                                                action: #selector(cancel))
-            navigationItem.leftBarButtonItem?.tintColor = .white
+//            navigationItem.leftBarButtonItem?.tintColor = .white
 //            navigationItem.leftBarButtonItem?.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
         }
         setupRightBarButtonItem()
@@ -159,7 +159,8 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     }
     
     @objc func cancel() {
-        didCancel?()
+        navigationController?.popViewController(animated: true)
+//        didCancel?()
     }
     
     // MARK: - Bottom buttons
